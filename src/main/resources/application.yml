@@ -1,0 +1,23 @@
+#define the root path for this web application
+server:
+  servlet:
+    context-path: /restsample
+
+#we have defined 2 log profiles 'dev' and 'prod' in the logback-spring.xml
+#here we make the profile 'dev' active
+spring:
+  profiles:
+    active: dev
+
+#define the log level for different package, define the log file
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework: ERROR
+    org.springframework.web: ERROR
+    org.springframework.data: ERROR
+    org.safs.rest.sample: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} : %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} : %msg%n"
+  file: restsample_debug.log

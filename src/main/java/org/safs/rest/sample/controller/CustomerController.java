@@ -21,6 +21,8 @@ import org.safs.rest.sample.repository.CustomerRepository;
 import org.safs.rest.sample.repository.InvoiceRepository;
 import org.safs.rest.sample.resource.CustomerResource;
 import org.safs.rest.sample.resource.CustomerResourceAssembler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @ExposesResourceFor(Customer.class)
 @RequestMapping(value="/customer", produces=MediaType.APPLICATION_JSON_VALUE)
 public class CustomerController {
+	private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
 
 	@Autowired
 	private CustomerRepository customerRepository;
@@ -64,6 +67,7 @@ public class CustomerController {
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CustomerResource> create(@RequestBody Customer body){
 		Customer customer = customerRepository.create(body);
+		log.debug("Customer has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(customer), HttpStatus.CREATED);
 	}
 
