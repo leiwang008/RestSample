@@ -13,6 +13,8 @@ package org.safs.rest.sample.controller;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.safs.rest.sample.exception.RestException;
 import org.safs.rest.sample.model.Customer;
@@ -59,26 +61,25 @@ public class CustomerController {
 
 	@GetMapping
 	public ResponseEntity<Collection<CustomerResource>> findAll(){
-		List<Customer> customers = customerRepository.findAll(Customer.class);
+		Iterable<Customer> customers = customerRepository.findAll();
 		Collection<CustomerResource> f = assembler.toResourceCollection(customers);
 		return new ResponseEntity<>(f, HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CustomerResource> create(@RequestBody Customer body){
-		Customer customer = customerRepository.create(body);
+		Customer customer = customerRepository.save(body);
 		log.debug("Customer has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(customer), HttpStatus.CREATED);
 	}
 
 	@GetMapping(value="/{id}")
 	public ResponseEntity<CustomerResource> find(@PathVariable Long id){
-		Customer c = customerRepository.findById(id, Customer.class);
-
-		if(c==null){
+		Optional<Customer> customer = customerRepository.findById(id);
+		try{
+			return new ResponseEntity<>(assembler.toResource(customer.get()), HttpStatus.OK);
+		}catch(NoSuchElementException nse){
 			throw new RestException("Failed to find Custome by id '"+id+"'", HttpStatus.NOT_FOUND);
-		}else{
-			return new ResponseEntity<>(assembler.toResource(c), HttpStatus.OK);
 		}
 	}
 
@@ -89,17 +90,26 @@ public class CustomerController {
 			throw new RestException("Cannot delete customer by id '"+id+"', there are still Invoices depeding on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 
-		HttpStatus status = customerRepository.delete(id, Customer.class)? HttpStatus.NO_CONTENT: HttpStatus.NOT_FOUND;
-		return new ResponseEntity<>(status);
+		if(!customerRepository.existsById(id)){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}else{
+			customerRepository.deleteById(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		}
 	}
 
 	@PutMapping(value="/{id}", consumes=MediaType.APPLICATION_JSON_VALUE )
 	public ResponseEntity<CustomerResource> update(@PathVariable Long id, @RequestBody Customer body){
-		Customer customer = customerRepository.update(id, body);
-		if(customer==null){
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if(!customerRepository.existsById(id)){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}else{
-			return new ResponseEntity<>(assembler.toResource(customer), HttpStatus.OK);
+			Customer original = customerRepository.findById(id).get();
+			original.setCity(body.getCity());
+			original.setFirstName(body.getFirstName());
+			original.setLastName(body.getLastName());
+			original.setStreet(body.getStreet());
+			customerRepository.save(original);
+			return new ResponseEntity<>(assembler.toResource(original), HttpStatus.OK);
 		}
 	}
 

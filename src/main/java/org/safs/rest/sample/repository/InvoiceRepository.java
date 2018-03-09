@@ -12,9 +12,11 @@
 package org.safs.rest.sample.repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.safs.rest.sample.model.Invoice;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -22,15 +24,8 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public class InvoiceRepository extends InMemoryRepository<Invoice>{
+public interface InvoiceRepository extends CrudRepository<Invoice, Long>{
 
-	@Override
-	protected void updateIfExists(Invoice original, Invoice desired) {
-		original.setCustomerId(desired.getCustomerId());
-		original.setTotal(desired.getTotal());
-	}
-
-	public List<Invoice> findAllByCustomerId(Long customerId){
-		return elements.stream().filter(e -> e.getCustomerId().equals(customerId)).collect(Collectors.toList());
-	}
+	@Query("select i FROM Invoice i where i.customerId=:customerId")
+	public List<Invoice> findAllByCustomerId(@Param("customerId") Long customerId);
 }

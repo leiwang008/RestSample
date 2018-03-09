@@ -12,21 +12,13 @@
 package org.safs.rest.sample.repository;
 
 import org.safs.rest.sample.model.Customer;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lei Wang
  *
  */
-
 @Repository
-public class CustomerRepository extends InMemoryRepository<Customer>{
-
-	@Override
-	protected void updateIfExists(Customer original, Customer desired) {
-		original.setCity(desired.getCity());
-		original.setFirstName(desired.getFirstName());
-		original.setLastName(desired.getLastName());
-		original.setStreet(desired.getStreet());
-	}
+public interface CustomerRepository extends CrudRepository<Customer, Long>{
 }

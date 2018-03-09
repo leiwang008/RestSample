@@ -14,6 +14,8 @@ package org.safs.rest.sample.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.safs.rest.sample.exception.RestException;
 import org.safs.rest.sample.model.Customer;
@@ -61,34 +63,35 @@ public class InvoiceController {
 
 	@GetMapping
 	public ResponseEntity<Collection<InvoiceResource>> findAll(){
-		List<Invoice> entities = invoiceRepository.findAll(Invoice.class);
+		Iterable<Invoice> entities = invoiceRepository.findAll();
 		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<InvoiceResource> create(@RequestBody Invoice body){
 		//First we need to make sure that customer exists.
-		Customer customer = customerRepository.findById(body.getCustomerId(), Customer.class);
+		try{
+			Optional<Customer> customer = customerRepository.findById(body.getCustomerId());
+			customer.get();
+		}catch(NoSuchElementException nse){
+			throw new RestException("Cannot find customer by ID '"+body.getCustomerId()+"', so the Invoice cannot be created with that customer.");
+		}
 
-		if(customer != null){
-			Invoice invoice = invoiceRepository.create(body);
-			if(invoice==null){
-				throw new RestException("Failed to create Invoice: "+body.toString());
-			}else{
-				return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toResource(invoice));
-			}
+		Invoice invoice = invoiceRepository.save(body);
+		if(invoice==null){
+			throw new RestException("Failed to create Invoice: "+body.toString());
 		}else{
-			throw new RestException("Cannot find customer by ID '"+body.getCustomerId()+"', so the Invoice cannot be created with that invoice.");
+			return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toResource(invoice));
 		}
 	}
 
 	@GetMapping(value="/{id}")
 	public ResponseEntity<InvoiceResource> find(@PathVariable Long id){
-		Invoice invoice = invoiceRepository.findById(id, Invoice.class);
-		if(invoice==null){
+		Optional<Invoice> invoice = invoiceRepository.findById(id);
+		try{
+			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(invoice.get()));
+		}catch(NoSuchElementException nse){
 			throw new RestException("Failed to find Invoice by id '"+id+"'", HttpStatus.NOT_FOUND);
-		}else{
-			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(invoice));
 		}
 	}
 
@@ -103,7 +106,7 @@ public class InvoiceController {
 			throw new RestException("There are still items related to invoice id '"+id+"', cannot delete this invoice!", HttpStatus.FAILED_DEPENDENCY);
 		}
 
-		if(invoiceRepository.delete(id, Invoice.class)){
+		if(invoiceRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}else{
 			throw new RestException("Failed to delete Invoice by id '"+id+"'", HttpStatus.NOT_FOUND);
@@ -122,16 +125,18 @@ public class InvoiceController {
 		body.setTotal(total);
 
 		//Make sure the customer id exist if we are going to update this field
-		Customer customer = customerRepository.findById(body.getCustomerId(), Customer.class);
-		if(customer==null){
+		if(!customerRepository.existsById(body.getCustomerId())){
 			throw new RestException("Failed to upate Invoice. Its field customer '"+body.getCustomerId()+"' doesn't exist!", HttpStatus.NOT_FOUND);
 		}
 
-		Invoice invoice = invoiceRepository.update(id, body);
-		if(invoice==null){
+		try{
+			Invoice original = invoiceRepository.findById(id).get();
+			original.setCustomerId(body.getCustomerId());
+			original.setTotal(body.getTotal());
+			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(original));
+		}catch(NoSuchElementException e){
 			throw new RestException("Failed to upate Invoice by id '"+id+"'", HttpStatus.NOT_FOUND);
-		}else{
-			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(invoice));
+
 		}
 	}
 

@@ -13,6 +13,8 @@ package org.safs.rest.sample.controller;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.safs.rest.sample.exception.RestException;
 import org.safs.rest.sample.model.Item;
@@ -56,25 +58,24 @@ public class ProductController {
 
 	@GetMapping
 	public ResponseEntity<Collection<ProductResource>> findAll(){
-		List<Product> products = productRepository.findAll(Product.class);
+		Iterable<Product> products = productRepository.findAll();
 		Collection<ProductResource> f = assembler.toResourceCollection(products);
 		return new ResponseEntity<>(f, HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ProductResource> create(@RequestBody Product product){
-		Product cc = productRepository.create(product);
+		Product cc = productRepository.save(product);
 		return new ResponseEntity<>(assembler.toResource(cc), HttpStatus.CREATED);
 	}
 
 	@GetMapping(value="/{id}")
 	public ResponseEntity<ProductResource> find(@PathVariable Long id){
-		Product c = productRepository.findById(id, Product.class);
-
-		if(c==null){
+		Optional<Product> c = productRepository.findById(id);
+		try{
+			return new ResponseEntity<>(assembler.toResource(c.get()), HttpStatus.OK);
+		}catch(NoSuchElementException e){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}else{
-			return new ResponseEntity<>(assembler.toResource(c), HttpStatus.OK);
 		}
 	}
 
@@ -85,17 +86,23 @@ public class ProductController {
 			throw new RestException("Cannot delete product by id '"+id+"', there are still Items depeding on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 
-		HttpStatus status = productRepository.delete(id, Product.class)? HttpStatus.NO_CONTENT: HttpStatus.NOT_FOUND;
-		return new ResponseEntity<>(status);
+		if(productRepository.existsById(id)){
+			productRepository.deleteById(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		}else{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 
 	@PutMapping(value="/{id}", consumes=MediaType.APPLICATION_JSON_VALUE )
-	public ResponseEntity<ProductResource> update(@PathVariable Long id, @RequestBody Product updatedProduct){
-		Product c = productRepository.update(id, updatedProduct);
-		if(c==null){
+	public ResponseEntity<ProductResource> update(@PathVariable Long id, @RequestBody Product body){
+		try{
+			Product product = productRepository.findById(id).get();
+			product.setName(body.getName());
+			product.setPrice(body.getPrice());
+			return new ResponseEntity<>(assembler.toResource(product), HttpStatus.OK);
+		}catch(NoSuchElementException e){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}else{
-			return new ResponseEntity<>(assembler.toResource(c), HttpStatus.OK);
 		}
 	}
 

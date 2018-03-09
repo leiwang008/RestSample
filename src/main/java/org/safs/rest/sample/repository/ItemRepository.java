@@ -12,34 +12,24 @@
 package org.safs.rest.sample.repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.safs.rest.sample.model.Item;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lei Wang
  *
  */
-
 @Repository
-public class ItemRepository extends InMemoryRepository<Item>{
+public interface ItemRepository extends CrudRepository<Item, Long>{
 
-	@Override
-	protected void updateIfExists(Item original, Item desired) {
-		original.setCost(desired.getCost());
-		original.setInvoiceId(desired.getInvoiceId());
-		original.setProductId(desired.getProductId());
-		original.setQuantity(desired.getQuantity());
-	}
-
-	public boolean deleteByInvoiceId(Long invoiceId){
-		return elements.removeIf(e -> e.getInvoiceId()==invoiceId );
-	}
-	public List<Item> findAllByInvoiceId(Long invoiceId){
-		return elements.stream().filter(e-> e.getInvoiceId().equals(invoiceId)).collect(Collectors.toList());
-	}
-	public List<Item> findAllByProductId(Long productId){
-		return elements.stream().filter(e-> e.getProductId().equals(productId)).collect(Collectors.toList());
-	}
+	@Query("delete from Item i where i.invoiceId=:invoiceId")
+	public boolean deleteByInvoiceId(@Param("invoiceId") Long invoiceId);
+	@Query("select i from Item i where i.invoiceId=:invoiceId")
+	public List<Item> findAllByInvoiceId(@Param("invoiceId") Long invoiceId);
+	@Query("select i from Item i where i.productId=:productId")
+	public List<Item> findAllByProductId(@Param("productId") Long productId);
 }

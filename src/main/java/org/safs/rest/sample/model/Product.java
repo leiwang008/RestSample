@@ -11,22 +11,29 @@
  */
 package org.safs.rest.sample.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.safs.rest.sample.util.Util;
+
 /**
  * @author Lei Wang
  *
  */
-public class Product implements Identifiable{
-
+@Entity
+public class Product{
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private double price;
 
-	@Override
 	public Long getId() {
 		return id;
 	}
 
-	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -58,5 +65,10 @@ public class Product implements Identifiable{
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
+    @Override
+	public String toString(){
+        return id+" | " + name+ " | "+ Util.keep2Decimal(price);
+    }
 
 }

@@ -12,6 +12,8 @@
 package org.safs.rest.sample.util;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Lei Wang
@@ -22,5 +24,13 @@ public class Util {
 
 	public static Double keep2Decimal(Double d){
 		return Double.parseDouble(decimalFormat2.format(d));
+	}
+
+	public static <T> Collection<T> toCollection(Iterable<T> iterable){
+		Collection<T> collection = new ArrayList<T>();
+		for(T e: iterable){
+			collection.add(e);
+		}
+		return collection;
 	}
 }

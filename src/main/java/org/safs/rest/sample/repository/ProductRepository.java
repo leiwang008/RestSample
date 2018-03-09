@@ -12,6 +12,7 @@
 package org.safs.rest.sample.repository;
 
 import org.safs.rest.sample.model.Product;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -20,11 +21,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public class ProductRepository extends InMemoryRepository<Product>{
-
-	@Override
-	protected void updateIfExists(Product original, Product desired) {
-		original.setName(desired.getName());
-		original.setPrice(desired.getPrice());
-	}
+public interface ProductRepository extends CrudRepository<Product, Long>{
 }
