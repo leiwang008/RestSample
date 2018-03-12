@@ -10,7 +10,10 @@ spring:
     active: dev
 #==== connect to mysql ======#
   jpa:
-    hibernate.ddl-auto: update
+    hibernate:
+      #ddl-auto can be none, validate, update, create, and create-drop
+      #use "create" or "create-drop" will initialize tables from script "import.sql"
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
@@ -28,6 +31,7 @@ logging:
     org.springframework.web: ERROR
     org.springframework.data: ERROR
     org.safs.rest.sample: debug
+    org.hibernate.SQL: error
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} : %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} : %msg%n"
