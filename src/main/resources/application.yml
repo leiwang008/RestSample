@@ -1,6 +1,8 @@
-#define the root path for this web application
+#the settings for 'server' only work for embedded Tomcat when we run this application with a jar file
+#if we package this application into a war file and deploy it into an external servlet container, these settings (Here) for 'server' will not work. 
 server:
   servlet:
+    #define the root path for this web application
     context-path: /restsample
 
 #we have defined 2 log profiles 'dev' and 'prod' in the logback-spring.xml

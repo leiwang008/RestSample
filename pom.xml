@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.safs</groupId>
-	<artifactId>RestSample</artifactId>
+	<artifactId>restsample</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<!-- packaging>war</packaging -->
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>RestSample</name>
 	<description>Demo project for Spring Boot</description>
@@ -32,11 +32,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!-- This is for running without "embedded tomcat". We will run a .war in an outside Tomcat. -->
-		<!-- dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
-		</dependency -->
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -80,6 +80,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>${project.artifactId}</finalName>
 	</build>
 
 

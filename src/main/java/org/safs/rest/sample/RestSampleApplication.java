@@ -16,6 +16,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.hateoas.config.EnableEntityLinks;
@@ -27,14 +29,14 @@ import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType
 @SpringBootApplication
 @EntityScan("org.safs.rest.sample.model")
 @EnableJpaRepositories("org.safs.rest.sample.repository")
-//public class RestSampleApplication extends SpringBootServletInitializer {
-public class RestSampleApplication{
+public class RestSampleApplication extends SpringBootServletInitializer {
 
 	private static final Logger log = LoggerFactory.getLogger(RestSampleApplication.class);
-//	@Override
-//	protected SpringApplicationBuilder configure(SpringApplicationBuilder application){
-//		return application.sources(RestSampleApplication.class);
-//	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application){
+		return application.sources(RestSampleApplication.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(RestSampleApplication.class, args);
