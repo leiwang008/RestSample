@@ -12,6 +12,8 @@
 package org.safs.rest.sample.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,6 +32,8 @@ public class Customer{
 	private String lastName;
 	private String street;
 	private String city;
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
 
 	public Long getId() {
 		return id;
@@ -95,8 +99,30 @@ public class Customer{
 		this.city = city;
 	}
 
-    @Override
+    /**
+	 * @return the gender
+	 */
+	public Gender getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public void update(Customer customer){
+		firstName = customer.getFirstName();
+		lastName = customer.getLastName();
+		street = customer.getStreet();
+		city = customer.getCity();
+		gender = customer.getGender();
+	}
+
+	@Override
 	public String toString(){
-        return id+" | " + lastName+ " | "+ firstName+ " | "+ street+" | "+city;
+        return id+" | " + lastName+ " | "+ firstName+ " | "+ gender+ " | "+ street+" | "+city;
     }
 }

@@ -12,6 +12,7 @@
 package org.safs.rest.sample.resource;
 
 import org.safs.rest.sample.model.Customer;
+import org.safs.rest.sample.model.Gender;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,6 +27,7 @@ public class CustomerResource extends ResourceSupport{
 	private final String lastName;
 	private final String street;
 	private final String city;
+	private final Gender gender;
 
 	public CustomerResource(Customer customer){
 		id = customer.getId();
@@ -33,6 +35,7 @@ public class CustomerResource extends ResourceSupport{
 		lastName = customer.getLastName();
 		street = customer.getStreet();
 		city = customer.getCity();
+		gender = customer.getGender();
 	}
 
 	/**
@@ -71,4 +74,15 @@ public class CustomerResource extends ResourceSupport{
 		return city;
 	}
 
+    /**
+	 * @return the gender
+	 */
+	public Gender getGender() {
+		return gender;
+	}
+
+	@Override
+	public String toString(){
+        return id+" | " + lastName+ " | "+ firstName+ " | "+ gender+ " | "+ street+" | "+city;
+    }
 }

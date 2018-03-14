@@ -26,17 +26,39 @@
 	</properties>
 
 	<dependencies>
-	
+		
+		<!-- tomcat-embed-jasper is used for embbed tomcat to interpret jsp files -->
+		<dependency>
+    		<groupId>org.apache.tomcat.embed</groupId>
+    		<artifactId>tomcat-embed-jasper</artifactId>
+    		<scope>provided</scope>
+		</dependency>
+		<!-- This is for running without "embedded tomcat". We will run a .war in an outside Tomcat. -->
+		<!-- dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency -->
+			
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- This is for running without "embedded tomcat". We will run a .war in an outside Tomcat. -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<!-- thymeleaf is another template technology: from JSP and Tiles to Thymeleaf
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+		</dependency>
+ 		-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
