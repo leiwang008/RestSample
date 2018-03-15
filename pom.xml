@@ -27,7 +27,8 @@
 
 	<dependencies>
 		
-		<!-- tomcat-embed-jasper is used for embbed tomcat to interpret jsp files -->
+		<!-- tomcat-embed-jasper is used for embbed tomcat to interpret jsp files, this should only be used during debug. -->
+		<!-- The following spring-boot-starter-tomcat will be un-commented during production. -->
 		<dependency>
     		<groupId>org.apache.tomcat.embed</groupId>
     		<artifactId>tomcat-embed-jasper</artifactId>

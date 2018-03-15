@@ -3,6 +3,7 @@
 
 <html>
   <head>
+    <link href="<c:url value="/resources/css/main.css" />" rel="stylesheet">
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -85,7 +86,7 @@
     	  </c:forEach>
 
           // Set chart options
-          var options = {'title':'Customers\'s gender.',
+          var options = {'title':'Customer\'s gender.',
                          'width':400,
                          'height':300};
 
@@ -101,7 +102,7 @@
     <div id="chart_city"></div>
     <div id="chart_gender"></div>
     <c:if test="${not empty customers}">
-    	<table border="1">
+    	<table border="1" id="customers">
     		<tr><th>ID</th><th>FirstName</th><th>LastName</th><th>Gender</th><th>Street</th><th>City</th></tr>
 			<c:forEach items="${customers}" var="customer">
     			<tr>
