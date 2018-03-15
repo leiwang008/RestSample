@@ -26,6 +26,10 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
 		
 		<!-- tomcat-embed-jasper is used for embbed tomcat to interpret jsp files, this should only be used during debug. -->
 		<!-- The following spring-boot-starter-tomcat will be un-commented during production. -->
@@ -73,10 +77,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 
         <dependency>
