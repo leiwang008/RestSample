@@ -26,9 +26,13 @@
             <appender-ref ref="ROLLING-FILE"/>
 		</logger -->
 		<!-- without defining appender, the root appender will write the log messages -->
-        <!-- logger name="org.springframework" level="error"/ -->
+        <logger name="org.springframework" level="error"/>
+        <logger name="org.springframework.web" level="error"/>
+        <logger name="org.springframework.data" level="error"/>
+        <logger name="org.hibernate.SQL" level="error"/>
+        <logger name="org.safs.rest.sample" level="debug"/>
 		
-        <root level="DEBUG">
+        <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ROLLING-FILE"/>
         </root>
